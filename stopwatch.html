@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    .stopwatch {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #display {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .controls button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .controls button:hover {
+      background: #0056b3;
+    }
+
+    #laps {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      max-height: 150px;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    #laps li {
+      background: #f0f0f0;
+      margin-bottom: 5px;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch">
+    <h1 id="display">00:00:00</h1>
+    <div class="controls">
+      <button onclick="start()">Start</button>
+      <button onclick="pause()">Pause</button>
+      <button onclick="reset()">Reset</button>
+      <button onclick="lap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
+  </div>
+
+  <script>
+    let [ms, s, m] = [0, 0, 0];
+    let timer = null;
+
+    function updateDisplay() {
+      document.getElementById("display").textContent =
+        `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(ms).padStart(2, '0')}`;
+    }
+
+    function stopwatch() {
+      ms++;
+      if (ms === 100) {
+        ms = 0;
+        s++;
+      }
+      if (s === 60) {
+        s = 0;
+        m++;
+      }
+      updateDisplay();
+    }
+
+    function start() {
+      if (timer !== null) return;
+      timer = setInterval(stopwatch, 10);
+    }
+
+    function pause() {
+      clearInterval(timer);
+      timer = null;
+    }
+
+    function reset() {
+      clearInterval(timer);
+      timer = null;
+      [ms, s, m] = [0, 0, 0];
+      updateDisplay();
+      document.getElementById("laps").innerHTML = '';
+    }
+
+    function lap() {
+      let lapTime = document.getElementById("display").textContent;
+      let li = document.createElement("li");
+      li.textContent = `Lap: ${lapTime}`;
+      document.getElementById("laps").appendChild(li);
+    }
+  </script>
+</body>
+</html>
